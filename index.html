@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab #6 - 3D Преобразования</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="workspace">
+    <div class="sidebar">
+        <div class="mode-section">
+            <p><b>Многогранник:</b></p>
+            <button id="btnTetrahedron" class="shape-btn active">Тетраэдр</button>
+            <button id="btnHexahedron" class="shape-btn">Гексаэдр (куб)</button>
+            <button id="btnOctahedron" class="shape-btn">Октаэдр</button>
+            <button id="btnIcosahedron" class="shape-btn">Икосаэдр</button>
+            <button id="btnDodecahedron" class="shape-btn">Додекаэдр</button>
+        </div>
+
+        <div class="mode-section">
+            <p><b>Проекция:</b></p>
+            <button id="btnPerspective" class="projection-btn">Перспективная</button>
+            <button id="btnAxonometric" class="projection-btn active">Аксонометрическая</button>
+        </div>
+
+        <div class="info-panel">
+            <strong>Информация</strong>
+            <div id="infoText">
+                <p>Вершин: <span id="vertexCount">0</span></p>
+                <p>Рёбер: <span id="edgeCount">0</span></p>
+                <p>Граней: <span id="faceCount">0</span></p>
+            </div>
+        </div>
+
+        <button id="btnReset" class="danger">Сбросить</button>
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <div class="transforms-section">
+        <div class="transform-controls">
+            <p><b>Смещение (dx, dy, dz)</b></p>
+            <label>dx: <input type="number" id="translateX" value="0" step="10"></label>
+            <label>dy: <input type="number" id="translateY" value="0" step="10"></label>
+            <label>dz: <input type="number" id="translateZ" value="50" step="10"></label>
+            <button id="btnTranslate" class="small-btn">Применить</button>
+        </div>
+
+        <div class="transform-controls">
+            <p><b>Поворот вокруг центра</b></p>
+            <label>X: <input type="number" id="rotateX" value="0" step="5"></label>
+            <label>Y: <input type="number" id="rotateY" value="15" step="5"></label>
+            <label>Z: <input type="number" id="rotateZ" value="0" step="5"></label>
+            <button id="btnRotate" class="small-btn">Применить</button>
+        </div>
+
+        <div class="transform-controls">
+            <p><b>Масштаб относительно центра</b></p>
+            <label>sx: <input type="number" id="scaleX" value="1.2" step="0.1"></label>
+            <label>sy: <input type="number" id="scaleY" value="1.2" step="0.1"></label>
+            <label>sz: <input type="number" id="scaleZ" value="1.2" step="0.1"></label>
+            <button id="btnScale" class="small-btn">Применить</button>
+        </div>
+
+        <div class="transform-controls disabled-section">
+            <p><b>Отражение относительно плоскости</b></p>
+            <button id="btnReflectXY" class="small-btn" disabled>XY</button>
+            <button id="btnReflectXZ" class="small-btn" disabled>XZ</button>
+            <button id="btnReflectYZ" class="small-btn" disabled>YZ</button>
+        </div>
+
+        <div class="transform-controls disabled-section">
+            <p><b>Масштаб относительно центра фигуры</b></p>
+            <label>sx: <input type="number" id="scaleCenterX" value="1.2" step="0.1" disabled></label>
+            <label>sy: <input type="number" id="scaleCenterY" value="1.2" step="0.1" disabled></label>
+            <label>sz: <input type="number" id="scaleCenterZ" value="1.2" step="0.1" disabled></label>
+            <button id="btnScaleCenter" class="small-btn" disabled>Применить</button>
+        </div>
+
+        <div class="transform-controls disabled-section">
+            <p><b>Поворот вокруг оси через центр фигуры</b></p>
+            <label>Угол: <input type="number" id="centerAxisAngle" value="45" step="5" disabled></label>
+            <button id="btnRotateCenterAxisX" class="small-btn" disabled>ось X</button>
+            <button id="btnRotateCenterAxisY" class="small-btn" disabled>ось Y</button>
+            <button id="btnRotateCenterAxisZ" class="small-btn" disabled>ось Z</button>
+        </div>
+
+        <div class="transform-controls disabled-section">
+            <p><b>Поворот вокруг произвольной прямой</b></p>
+            <div style="margin-bottom: 8px;">
+                <label style="display: inline-block;">Точка 1:</label><br>
+                <label>x: <input type="number" id="line1X" value="0" step="10" style="width: 50px;" disabled></label>
+                <label>y: <input type="number" id="line1Y" value="0" step="10" style="width: 50px;" disabled></label>
+                <label>z: <input type="number" id="line1Z" value="0" step="10" style="width: 50px;" disabled></label>
+            </div>
+            <div style="margin-bottom: 8px;">
+                <label style="display: inline-block;">Точка 2:</label><br>
+                <label>x: <input type="number" id="line2X" value="100" step="10" style="width: 50px;" disabled></label>
+                <label>y: <input type="number" id="line2Y" value="100" step="10" style="width: 50px;" disabled></label>
+                <label>z: <input type="number" id="line2Z" value="100" step="10" style="width: 50px;" disabled></label>
+            </div>
+            <label>Угол: <input type="number" id="lineRotateAngle" value="45" step="5" disabled></label>
+            <button id="btnRotateLine" class="small-btn" disabled>Применить</button>
+        </div>
+    </div>
+</div>
+
+<script src="js/geometry.js"></script>
+<script src="js/polyhedrons.js"></script>
+<script src="js/projection.js"></script>
+<script src="js/drawing.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
