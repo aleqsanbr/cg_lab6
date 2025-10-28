@@ -180,3 +180,54 @@ function createRotationAroundCenterMatrix(angleX, angleY, angleZ, center) {
 
     return multiplyMatrices4(multiplyMatrices4(t2, rotation), t1);
 }
+
+// ========== Поворот вокруг произвольной прямой ==========
+
+function createRotationAroundLineMatrix(angle, p1, p2) {
+    // Направляющий вектор прямой
+    const dx = p2.x - p1.x;
+    const dy = p2.y - p1.y;
+    const dz = p2.z - p1.z;
+
+    // Нормализация
+    const length = Math.sqrt(dx * dx + dy * dy + dz * dz);
+    const lx = dx / length;
+    const ly = dy / length;
+    const lz = dz / length;
+
+	 // Перенос в начало координат
+    const t1 = createTranslationMatrix(-p1.x, -p1.y, -p1.z);
+
+    // Формула Родрига для поворота вокруг произвольной оси
+    const rad = angle * Math.PI / 180;
+    const cos = Math.cos(rad);
+    const sin = Math.sin(rad);
+    const oneMinusCos = 1 - cos;
+
+    const rotationMatrix = [
+        [
+            cos + lx * lx * oneMinusCos,
+            lx * ly * oneMinusCos - lz * sin,
+            lx * lz * oneMinusCos + ly * sin,
+            0
+        ],
+        [
+            ly * lx * oneMinusCos + lz * sin,
+            cos + ly * ly * oneMinusCos,
+            ly * lz * oneMinusCos - lx * sin,
+            0
+        ],
+        [
+            lz * lx * oneMinusCos - ly * sin,
+            lz * ly * oneMinusCos + lx * sin,
+            cos + lz * lz * oneMinusCos,
+            0
+        ],
+        [0, 0, 0, 1]
+    ];
+
+    // Перенос обратно
+    const t2 = createTranslationMatrix(p1.x, p1.y, p1.z);
+
+    return multiplyMatrices4(multiplyMatrices4(t2, rotationMatrix), t1);
+}

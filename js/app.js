@@ -43,6 +43,55 @@ function setupEventListeners() {
     document.getElementById('btnScale').addEventListener('click', handleScale);
 
     document.getElementById('btnReset').addEventListener('click', reset);
+
+    // Поворот вокруг осей через центр
+    document.getElementById('btnRotateCenterAxisX').addEventListener('click', () => handleRotateAxis('X'));
+    document.getElementById('btnRotateCenterAxisY').addEventListener('click', () => handleRotateAxis('Y'));
+    document.getElementById('btnRotateCenterAxisZ').addEventListener('click', () => handleRotateAxis('Z'));
+
+    // Поворот вокруг произвольной прямой
+    document.getElementById('btnRotateLine').addEventListener('click', handleRotateLine);
+}
+
+function handleRotateAxis(axis) {
+    const angle = parseFloat(document.getElementById('centerAxisAngle').value) || 0;
+    const center = currentPolyhedron.getCenter();
+    
+    let matrix;
+    switch (axis) {
+        case 'X':
+            matrix = createRotationAroundCenterMatrix(angle, 0, 0, center);
+            break;
+        case 'Y':
+            matrix = createRotationAroundCenterMatrix(0, angle, 0, center);
+            break;
+        case 'Z':
+            matrix = createRotationAroundCenterMatrix(0, 0, angle, center);
+            break;
+    }
+    
+    currentPolyhedron.applyTransformation(matrix);
+    render();
+}
+
+function handleRotateLine() {
+    const angle = parseFloat(document.getElementById('lineRotateAngle').value) || 0;
+    
+    const p1 = new Point3D(
+        parseFloat(document.getElementById('line1X').value) || 0,
+        parseFloat(document.getElementById('line1Y').value) || 0,
+        parseFloat(document.getElementById('line1Z').value) || 0
+    );
+    
+    const p2 = new Point3D(
+        parseFloat(document.getElementById('line2X').value) || 0,
+        parseFloat(document.getElementById('line2Y').value) || 0,
+        parseFloat(document.getElementById('line2Z').value) || 0
+    );
+    
+    const matrix = createRotationAroundLineMatrix(angle, p1, p2);
+    currentPolyhedron.applyTransformation(matrix);
+    render();
 }
 
 function switchShape(shape) {
