@@ -231,3 +231,35 @@ function createRotationAroundLineMatrix(angle, p1, p2) {
 
     return multiplyMatrices4(multiplyMatrices4(t2, rotationMatrix), t1);
 }
+
+
+
+
+
+
+function createReflectionXYMatrix() {
+    return [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, -1, 0],
+        [0, 0, 0, 1]
+    ];
+}
+
+function createReflectionXZMatrix() {
+    return [
+        [1, 0, 0, 0],
+        [0, -1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ];
+}
+
+function createReflectionYZMatrix() {
+    return [
+        [-1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+    ];
+}
