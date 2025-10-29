@@ -41,6 +41,7 @@ function setupEventListeners() {
     document.getElementById('btnTranslate').addEventListener('click', handleTranslate);
     document.getElementById('btnRotate').addEventListener('click', handleRotate);
     document.getElementById('btnScale').addEventListener('click', handleScale);
+    document.getElementById('btnScaleCenter').addEventListener('click', handleScaleAroundCenter);
 
     document.getElementById('btnReset').addEventListener('click', reset);
 
@@ -51,6 +52,10 @@ function setupEventListeners() {
 
     // Поворот вокруг произвольной прямой
     document.getElementById('btnRotateLine').addEventListener('click', handleRotateLine);
+
+    document.getElementById('btnReflectXY').addEventListener('click', () => handleReflect('XY'));
+    document.getElementById('btnReflectXZ').addEventListener('click', () => handleReflect('XZ'));
+    document.getElementById('btnReflectYZ').addEventListener('click', () => handleReflect('YZ'));
 }
 
 function handleRotateAxis(axis) {
@@ -172,6 +177,38 @@ function handleScale() {
     currentPolyhedron.applyTransformation(matrix);
     render();
 }
+
+
+function handleScaleAroundCenter() {
+    const sx = parseFloat(document.getElementById('scaleCenterX').value) || 1;
+    const sy = parseFloat(document.getElementById('scaleCenterY').value) || 1;
+    const sz = parseFloat(document.getElementById('scaleCenterZ').value) || 1;
+
+    const center = currentPolyhedron.getCenter();
+    const matrix = createScaleAroundPointMatrix(sx, sy, sz, center.x, center.y, center.z);
+    currentPolyhedron.applyTransformation(matrix);
+    render();
+}
+
+
+function handleReflect(plane) {
+    let matrix;
+    switch (plane) {
+        case 'XY':
+            matrix = createReflectionXYMatrix();
+            break;
+        case 'XZ':
+            matrix = createReflectionXZMatrix();
+            break;
+        case 'YZ':
+            matrix = createReflectionYZMatrix();
+            break;
+    }
+
+    currentPolyhedron.applyTransformation(matrix);
+    render();
+}
+
 
 function reset() {
     loadPolyhedron(currentShape);
